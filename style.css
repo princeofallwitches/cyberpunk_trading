@@ -1,0 +1,374 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);
+    color: #00ff88;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff88;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+header {
+    background: linear-gradient(90deg, #001a0f 0%, #003322 100%);
+    padding: 20px;
+    border-bottom: 2px solid #00ff88;
+}
+
+h1 {
+    font-size: 2.5em;
+    text-align: center;
+    text-shadow: 0 0 10px #00ff88;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+}
+
+.player-stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.label {
+    font-size: 0.8em;
+    color: #00aa66;
+}
+
+.value {
+    font-size: 1.5em;
+    font-weight: bold;
+    text-shadow: 0 0 5px #00ff88;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+section {
+    background: rgba(0, 20, 10, 0.6);
+    border: 1px solid #00aa66;
+    padding: 15px;
+}
+
+h2 {
+    color: #00ff88;
+    margin-bottom: 15px;
+    text-shadow: 0 0 5px #00ff88;
+    font-size: 1.3em;
+    letter-spacing: 2px;
+}
+
+.news-feed {
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.news-item {
+    background: rgba(0, 40, 20, 0.6);
+    border-left: 3px solid #00ff88;
+    padding: 10px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.news-item.positive {
+    border-left-color: #00ff88;
+    background: rgba(0, 40, 20, 0.6);
+}
+
+.news-item.negative {
+    border-left-color: #ff0066;
+    background: rgba(40, 0, 20, 0.6);
+}
+
+.news-item.neutral {
+    border-left-color: #ffaa00;
+    background: rgba(40, 30, 0, 0.6);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.news-date {
+    display: block;
+    font-size: 0.8em;
+    color: #00aa66;
+    margin-bottom: 5px;
+}
+
+.news-text {
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.stocks-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stock-header {
+    display: grid;
+    grid-template-columns: 80px 2fr 120px 120px 80px 100px;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0, 60, 30, 0.8);
+    font-weight: bold;
+    border-bottom: 2px solid #00ff88;
+}
+
+.stock-item {
+    display: grid;
+    grid-template-columns: 80px 2fr 120px 120px 80px 100px;
+    gap: 10px;
+    padding: 12px 10px;
+    background: rgba(0, 20, 10, 0.4);
+    border: 1px solid #004433;
+    transition: all 0.3s ease;
+}
+
+.stock-item:hover {
+    background: rgba(0, 40, 20, 0.6);
+    border-color: #00ff88;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.ticker {
+    font-weight: bold;
+    color: #00ffaa;
+}
+
+.company-name {
+    font-size: 0.9em;
+}
+
+.price {
+    font-weight: bold;
+    text-align: right;
+}
+
+.change {
+    text-align: right;
+    font-weight: bold;
+}
+
+.change.positive {
+    color: #00ff88;
+}
+
+.change.negative {
+    color: #ff0066;
+}
+
+.change.neutral {
+    color: #ffaa00;
+}
+
+.owned {
+    text-align: center;
+    color: #00ffaa;
+}
+
+.trade-btn {
+    background: linear-gradient(135deg, #003322 0%, #005544 100%);
+    border: 1px solid #00ff88;
+    color: #00ff88;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.trade-btn:hover {
+    background: linear-gradient(135deg, #005544 0%, #007766 100%);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    transform: translateY(-2px);
+}
+
+footer {
+    padding: 20px;
+    text-align: center;
+    border-top: 2px solid #00ff88;
+    background: linear-gradient(90deg, #001a0f 0%, #003322 100%);
+}
+
+.advance-btn {
+    background: linear-gradient(135deg, #ff0066 0%, #ff3388 100%);
+    border: 2px solid #ff0066;
+    color: white;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    cursor: pointer;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(255, 0, 102, 0.4);
+    transition: all 0.3s ease;
+}
+
+.advance-btn:hover {
+    background: linear-gradient(135deg, #ff3388 0%, #ff66aa 100%);
+    box-shadow: 0 0 30px rgba(255, 0, 102, 0.6);
+    transform: scale(1.05);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #001a0f 0%, #002a1a 100%);
+    margin: 10% auto;
+    padding: 20px;
+    border: 2px solid #00ff88;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+}
+
+.close {
+    color: #ff0066;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 20px;
+}
+
+.close:hover {
+    color: #ff3388;
+}
+
+.modal-body {
+    margin-top: 20px;
+}
+
+#modal-info {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.trade-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#trade-amount {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #00aa66;
+    color: #00ff88;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.trade-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-buy, .btn-sell {
+    flex: 1;
+    padding: 12px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 1.1em;
+    cursor: pointer;
+    border: 2px solid;
+    transition: all 0.3s ease;
+}
+
+.btn-buy {
+    background: linear-gradient(135deg, #003322 0%, #005544 100%);
+    border-color: #00ff88;
+    color: #00ff88;
+}
+
+.btn-buy:hover {
+    background: linear-gradient(135deg, #005544 0%, #007766 100%);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
+.btn-sell {
+    background: linear-gradient(135deg, #330011 0%, #550022 100%);
+    border-color: #ff0066;
+    color: #ff0066;
+}
+
+.btn-sell:hover {
+    background: linear-gradient(135deg, #550022 0%, #770033 100%);
+    box-shadow: 0 0 15px rgba(255, 0, 102, 0.5);
+}
+
+.trade-result {
+    margin-top: 15px;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #001a0f;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00aa66;
+    border: 1px solid #00ff88;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00ff88;
+}

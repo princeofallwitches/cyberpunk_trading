@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Stock Trader 2087</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>STOCK TERMINAL 2087</h1>
+            <div class="player-stats">
+                <div class="stat">
+                    <span class="label">CASH:</span>
+                    <span class="value" id="cash">¥50,000</span>
+                </div>
+                <div class="stat">
+                    <span class="label">PORTFOLIO VALUE:</span>
+                    <span class="value" id="portfolio-value">¥0</span>
+                </div>
+                <div class="stat">
+                    <span class="label">DAY:</span>
+                    <span class="value" id="current-day">1</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <section class="news-section">
+                <h2>NEWS FEED</h2>
+                <div id="news-feed" class="news-feed">
+                    <div class="news-item initial">
+                        <span class="news-date">DAY 1</span>
+                        <span class="news-text">Markets open. The megacorps watch. Your future begins.</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stocks-section">
+                <h2>MARKET DATA</h2>
+                <div class="stocks-grid">
+                    <div class="stock-header">
+                        <div>TICKER</div>
+                        <div>COMPANY</div>
+                        <div>PRICE</div>
+                        <div>CHANGE</div>
+                        <div>OWNED</div>
+                        <div>TRADE</div>
+                    </div>
+                    <div id="stocks-list"></div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <button id="advance-day" class="advance-btn">ADVANCE TO NEXT DAY</button>
+        </footer>
+    </div>
+
+    <!-- Trading Modal -->
+    <div id="trade-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">TRADE</h2>
+            <div class="modal-body">
+                <p id="modal-info"></p>
+                <div class="trade-controls">
+                    <input type="number" id="trade-amount" min="1" value="1" placeholder="Shares">
+                    <div class="trade-buttons">
+                        <button id="buy-btn" class="btn-buy">BUY</button>
+                        <button id="sell-btn" class="btn-sell">SELL</button>
+                    </div>
+                </div>
+                <p id="trade-result" class="trade-result"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
