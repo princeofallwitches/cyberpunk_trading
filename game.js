@@ -10,6 +10,7 @@ const gameState = {
             sector: 'Cybernetics',
             basePrice: 245,
             currentPrice: 245,
+            previousPrice: 245,
             growthRate: 0.02, // 2% daily base growth
             volatility: 0.15,
             description: 'Leading manufacturer of cybernetic enhancements and synthetic organs',
@@ -21,6 +22,7 @@ const gameState = {
             sector: 'Energy',
             basePrice: 180,
             currentPrice: 180,
+            previousPrice: 180,
             growthRate: 0.015,
             volatility: 0.12,
             description: 'Controls fusion reactors and solar arrays across the Pacific Rim',
@@ -32,6 +34,7 @@ const gameState = {
             sector: 'AI/Tech',
             basePrice: 420,
             currentPrice: 420,
+            previousPrice: 420,
             growthRate: 0.03,
             volatility: 0.25,
             description: 'Quantum computing and neural interface technology pioneer',
@@ -43,6 +46,7 @@ const gameState = {
             sector: 'Retail',
             basePrice: 95,
             currentPrice: 95,
+            previousPrice: 95,
             growthRate: 0.01,
             volatility: 0.08,
             description: 'Megacity retail conglomerate controlling essential goods distribution',
@@ -54,6 +58,7 @@ const gameState = {
             sector: 'Security',
             basePrice: 310,
             currentPrice: 310,
+            previousPrice: 310,
             growthRate: 0.018,
             volatility: 0.18,
             description: 'Private military contractor and automated law enforcement provider',
@@ -204,7 +209,8 @@ function renderStocks() {
         const stockItem = document.createElement('div');
         stockItem.className = 'stock-item';
 
-        const changePercent = ((company.currentPrice - company.basePrice) / company.basePrice) * 100;
+        // Calculate day-over-day change (current price vs previous day)
+        const changePercent = ((company.currentPrice - company.previousPrice) / company.previousPrice) * 100;
         const changeClass = changePercent > 0 ? 'positive' : changePercent < 0 ? 'negative' : 'neutral';
         const changeSymbol = changePercent > 0 ? '▲' : changePercent < 0 ? '▼' : '●';
 
@@ -360,6 +366,9 @@ function advanceDay() {
 
     // Apply daily growth/volatility with market correction and record price history
     gameState.companies.forEach(company => {
+        // Save current price as previous price before updating
+        company.previousPrice = company.currentPrice;
+
         const randomFactor = (Math.random() - 0.5) * company.volatility;
         const correctionModifier = marketCorrections[company.ticker];
 
@@ -459,25 +468,33 @@ function openChartModal(ticker) {
     changeElement.textContent = `${totalChange >= 0 ? '▲' : '▼'} ${Math.abs(totalChange).toFixed(2)}%`;
     changeElement.style.color = totalChange >= 0 ? '#00ff88' : '#ff0066';
 
-    // Draw the chart
-    drawChart(company);
-
+    // Show modal first so canvas has dimensions
     modal.style.display = 'block';
+
+    // Draw the chart after a brief delay to ensure modal is rendered
+    setTimeout(() => drawChart(company), 10);
 }
 
 // Draw price chart
 function drawChart(company) {
     const canvas = document.getElementById('price-chart');
+    if (!canvas) {
+        console.error('Canvas element not found');
+        return;
+    }
+
     const ctx = canvas.getContext('2d');
 
-    // Set canvas size to match display size
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    // Get the container dimensions
+    const container = canvas.parentElement;
+    const rect = container.getBoundingClientRect();
 
-    const width = rect.width;
-    const height = rect.height;
+    // Set canvas size - use fixed dimensions to ensure it renders
+    const width = rect.width - 40; // Account for padding
+    const height = 400;
+
+    canvas.width = width;
+    canvas.height = height;
 
     // Clear canvas
     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
