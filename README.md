@@ -34,9 +34,10 @@ Private military contractor and automated law enforcement provider. Good growth 
 1. **Open `index.html` in a web browser**
 2. **Starting Capital:** You begin with ¥50,000
 3. **Buy/Sell Stocks:** Click "TRADE" next to any company to buy or sell shares
-4. **Read the News:** News events appear in the feed and affect stock prices
-5. **Advance Days:** Click "ADVANCE TO NEXT DAY" to progress time
-6. **Watch Your Portfolio:** Track your total value (cash + stocks)
+4. **View Price Charts:** Click "CHART" to see historical price data with statistics
+5. **Read the News:** News events appear in the feed and affect stock prices
+6. **Advance Days:** Click "ADVANCE TO NEXT DAY" to progress time
+7. **Watch Your Portfolio:** Track your total value (cash + stocks)
 
 ## Game Mechanics
 
@@ -52,12 +53,21 @@ Private military contractor and automated law enforcement provider. Good growth 
 - Market-wide events affect all companies
 - News impacts both immediate price and ongoing growth trajectory
 
+### Price Charts
+- Click the **CHART** button next to any stock to view its price history
+- Charts show price trends over time with a line graph
+- Statistics include: start price, current price, high, low, and total change percentage
+- Visual grid helps identify price levels and day markers
+- Green line shows price movement, with filled area underneath
+- Red dashed line indicates current price level
+
 ### Strategy Tips
 - **High risk, high reward:** NNET has the highest growth but most volatility
 - **Stability:** APEX offers steady, predictable returns
 - **Diversify:** Spread investments across sectors to reduce risk
 - **Watch the news:** React quickly to major events
 - **Long-term growth:** Companies with modified growth rates compound over time
+- **Use charts:** Identify trends and patterns to make informed trading decisions
 
 ## File Structure
 
@@ -80,7 +90,9 @@ No server or build process required - it's a pure client-side web application.
 - 5 unique megacorporations with distinct characteristics
 - Dynamic news generation system with 40+ event templates
 - Real-time stock price calculations
+- Interactive price charts with historical data visualization
 - Portfolio tracking and management
+- Canvas-based charting with statistics (high, low, change, etc.)
 - Cyberpunk-themed UI with neon aesthetics
 - Responsive design for various screen sizes
 - Persistent game state during session
