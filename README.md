@@ -45,6 +45,7 @@ Private military contractor and automated law enforcement provider. Good growth 
 - Each company has a **base growth rate** (daily percentage increase)
 - Prices fluctuate with **volatility** (random daily variations)
 - **News events** cause immediate price jumps and modify future growth rates
+- **Market correction** applies mean reversion: outperforming stocks face sell pressure while underperforming stocks attract buyers
 
 ### News Events
 - 1-3 news events occur each day
@@ -52,6 +53,14 @@ Private military contractor and automated law enforcement provider. Good growth 
 - Company-specific events affect individual stocks
 - Market-wide events affect all companies
 - News impacts both immediate price and ongoing growth trajectory
+
+### Market Correction (Mean Reversion)
+The game includes a realistic market correction mechanic to prevent runaway growth:
+- **Profit-taking**: When a stock significantly outperforms the market average, investors start selling to lock in profits, creating downward pressure
+- **Value buying**: When a stock underperforms, value investors see opportunity and start buying, creating upward support
+- **Dynamic news**: You'll see news events like "Investors take profits on [Company]" when significant corrections occur
+- **Balanced gameplay**: This prevents any single stock from reaching unrealistic values while keeping struggling stocks viable
+- **Correction strength**: The effect is proportional to how far a stock deviates from the market average (2% correction per 100% deviation)
 
 ### Price Charts
 - Click the **CHART** button next to any stock to view its price history
@@ -68,6 +77,8 @@ Private military contractor and automated law enforcement provider. Good growth 
 - **Watch the news:** React quickly to major events
 - **Long-term growth:** Companies with modified growth rates compound over time
 - **Use charts:** Identify trends and patterns to make informed trading decisions
+- **Market timing:** Take profits when stocks are significantly outperforming (watch for sell pressure news)
+- **Buy the dip:** Look for opportunities when good companies underperform (watch for value buying news)
 
 ## File Structure
 

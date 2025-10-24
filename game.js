@@ -290,6 +290,37 @@ function executeTrade(action) {
     renderStocks();
 }
 
+// Calculate market correction modifiers (mean reversion)
+// Stocks that are outperforming get negative correction (sell pressure)
+// Stocks that are underperforming get positive correction (buy pressure)
+function calculateMarketCorrection() {
+    const corrections = {};
+
+    // Calculate performance for each stock (percentage change from base price)
+    const performances = gameState.companies.map(company => ({
+        ticker: company.ticker,
+        performance: (company.currentPrice - company.basePrice) / company.basePrice
+    }));
+
+    // Calculate average market performance
+    const avgPerformance = performances.reduce((sum, p) => sum + p.performance, 0) / performances.length;
+
+    // Apply correction to each stock based on deviation from average
+    const correctionStrength = 0.02; // 2% correction per 100% deviation from average
+
+    performances.forEach(p => {
+        const deviation = p.performance - avgPerformance;
+
+        // Outperforming stocks: negative correction (sell pressure slows growth)
+        // Underperforming stocks: positive correction (buy pressure reduces decline)
+        const correction = -deviation * correctionStrength;
+
+        corrections[p.ticker] = correction;
+    });
+
+    return corrections;
+}
+
 // Advance to next day
 function advanceDay() {
     gameState.day++;
@@ -324,10 +355,16 @@ function advanceDay() {
         }
     });
 
-    // Apply daily growth/volatility and record price history
+    // Calculate market correction modifiers (mean reversion)
+    const marketCorrections = calculateMarketCorrection();
+
+    // Apply daily growth/volatility with market correction and record price history
     gameState.companies.forEach(company => {
         const randomFactor = (Math.random() - 0.5) * company.volatility;
-        const dailyChange = company.growthRate + randomFactor;
+        const correctionModifier = marketCorrections[company.ticker];
+
+        // Apply growth rate, volatility, and market correction
+        const dailyChange = company.growthRate + randomFactor + correctionModifier;
         company.currentPrice *= (1 + dailyChange);
         company.currentPrice = Math.max(company.currentPrice, 1); // Prevent negative prices
 
@@ -336,6 +373,20 @@ function advanceDay() {
             day: gameState.day,
             price: company.currentPrice
         });
+
+        // Generate market correction news for significant corrections
+        if (Math.abs(correctionModifier) > 0.015) { // Significant correction threshold
+            const correctionNews = {
+                company: company.ticker,
+                text: correctionModifier < 0
+                    ? `Investors take profits on ${company.name}, selling pressure mounts`
+                    : `Value investors see opportunity in ${company.name}, buying pressure increases`,
+                impact: 0,
+                growthChange: 0,
+                sentiment: correctionModifier < 0 ? 'negative' : 'positive'
+            };
+            todaysNews.push(correctionNews);
+        }
     });
 
     // Display news
