@@ -331,6 +331,11 @@ function calculateMarketCorrection() {
 function advanceDay() {
     gameState.day++;
 
+    // Save current prices as previous prices BEFORE any modifications
+    gameState.companies.forEach(company => {
+        company.previousPrice = company.currentPrice;
+    });
+
     // Generate news events (1-3 events per day)
     const numEvents = Math.floor(Math.random() * 3) + 1;
     const todaysNews = [];
@@ -366,9 +371,6 @@ function advanceDay() {
 
     // Apply daily growth/volatility with market correction and record price history
     gameState.companies.forEach(company => {
-        // Save current price as previous price before updating
-        company.previousPrice = company.currentPrice;
-
         const randomFactor = (Math.random() - 0.5) * company.volatility;
         const correctionModifier = marketCorrections[company.ticker];
 
