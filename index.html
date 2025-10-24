@@ -46,7 +46,7 @@
                         <div>PRICE</div>
                         <div>CHANGE</div>
                         <div>OWNED</div>
-                        <div>TRADE</div>
+                        <div>ACTIONS</div>
                     </div>
                     <div id="stocks-list"></div>
                 </div>
@@ -73,6 +73,39 @@
                     </div>
                 </div>
                 <p id="trade-result" class="trade-result"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Modal -->
+    <div id="chart-modal" class="modal">
+        <div class="modal-content chart-modal-content">
+            <span class="close chart-close">&times;</span>
+            <h2 id="chart-title">PRICE HISTORY</h2>
+            <div class="chart-container">
+                <canvas id="price-chart"></canvas>
+            </div>
+            <div class="chart-stats">
+                <div class="chart-stat">
+                    <span class="stat-label">START:</span>
+                    <span id="chart-start-price" class="stat-value">¥0.00</span>
+                </div>
+                <div class="chart-stat">
+                    <span class="stat-label">CURRENT:</span>
+                    <span id="chart-current-price" class="stat-value">¥0.00</span>
+                </div>
+                <div class="chart-stat">
+                    <span class="stat-label">CHANGE:</span>
+                    <span id="chart-total-change" class="stat-value">0%</span>
+                </div>
+                <div class="chart-stat">
+                    <span class="stat-label">HIGH:</span>
+                    <span id="chart-high-price" class="stat-value">¥0.00</span>
+                </div>
+                <div class="chart-stat">
+                    <span class="stat-label">LOW:</span>
+                    <span id="chart-low-price" class="stat-value">¥0.00</span>
+                </div>
             </div>
         </div>
     </div>

@@ -12,7 +12,8 @@ const gameState = {
             currentPrice: 245,
             growthRate: 0.02, // 2% daily base growth
             volatility: 0.15,
-            description: 'Leading manufacturer of cybernetic enhancements and synthetic organs'
+            description: 'Leading manufacturer of cybernetic enhancements and synthetic organs',
+            priceHistory: [{day: 1, price: 245}]
         },
         {
             ticker: 'HELOS',
@@ -22,7 +23,8 @@ const gameState = {
             currentPrice: 180,
             growthRate: 0.015,
             volatility: 0.12,
-            description: 'Controls fusion reactors and solar arrays across the Pacific Rim'
+            description: 'Controls fusion reactors and solar arrays across the Pacific Rim',
+            priceHistory: [{day: 1, price: 180}]
         },
         {
             ticker: 'NNET',
@@ -32,7 +34,8 @@ const gameState = {
             currentPrice: 420,
             growthRate: 0.03,
             volatility: 0.25,
-            description: 'Quantum computing and neural interface technology pioneer'
+            description: 'Quantum computing and neural interface technology pioneer',
+            priceHistory: [{day: 1, price: 420}]
         },
         {
             ticker: 'APEX',
@@ -42,7 +45,8 @@ const gameState = {
             currentPrice: 95,
             growthRate: 0.01,
             volatility: 0.08,
-            description: 'Megacity retail conglomerate controlling essential goods distribution'
+            description: 'Megacity retail conglomerate controlling essential goods distribution',
+            priceHistory: [{day: 1, price: 95}]
         },
         {
             ticker: 'GRDN',
@@ -52,7 +56,8 @@ const gameState = {
             currentPrice: 310,
             growthRate: 0.018,
             volatility: 0.18,
-            description: 'Private military contractor and automated law enforcement provider'
+            description: 'Private military contractor and automated law enforcement provider',
+            priceHistory: [{day: 1, price: 310}]
         }
     ],
     newsHistory: [],
@@ -146,17 +151,29 @@ function init() {
 
     document.getElementById('advance-day').addEventListener('click', advanceDay);
 
-    // Modal controls
-    const modal = document.getElementById('trade-modal');
-    const closeBtn = document.getElementsByClassName('close')[0];
+    // Trade Modal controls
+    const tradeModal = document.getElementById('trade-modal');
+    const tradeCloseBtn = tradeModal.getElementsByClassName('close')[0];
 
-    closeBtn.onclick = function() {
-        modal.style.display = 'none';
+    tradeCloseBtn.onclick = function() {
+        tradeModal.style.display = 'none';
     }
 
+    // Chart Modal controls
+    const chartModal = document.getElementById('chart-modal');
+    const chartCloseBtn = chartModal.getElementsByClassName('chart-close')[0];
+
+    chartCloseBtn.onclick = function() {
+        chartModal.style.display = 'none';
+    }
+
+    // Click outside modal to close
     window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = 'none';
+        if (event.target == tradeModal) {
+            tradeModal.style.display = 'none';
+        }
+        if (event.target == chartModal) {
+            chartModal.style.display = 'none';
         }
     }
 
@@ -199,7 +216,10 @@ function renderStocks() {
             <div class="price">¥${company.currentPrice.toFixed(2)}</div>
             <div class="change ${changeClass}">${changeSymbol} ${Math.abs(changePercent).toFixed(2)}%</div>
             <div class="owned">${owned}</div>
-            <div><button class="trade-btn" onclick="openTradeModal('${company.ticker}')">TRADE</button></div>
+            <div class="stock-actions">
+                <button class="trade-btn" onclick="openTradeModal('${company.ticker}')">TRADE</button>
+                <button class="chart-btn" onclick="openChartModal('${company.ticker}')">CHART</button>
+            </div>
         `;
 
         stocksList.appendChild(stockItem);
@@ -304,12 +324,18 @@ function advanceDay() {
         }
     });
 
-    // Apply daily growth/volatility
+    // Apply daily growth/volatility and record price history
     gameState.companies.forEach(company => {
         const randomFactor = (Math.random() - 0.5) * company.volatility;
         const dailyChange = company.growthRate + randomFactor;
         company.currentPrice *= (1 + dailyChange);
         company.currentPrice = Math.max(company.currentPrice, 1); // Prevent negative prices
+
+        // Record price in history
+        company.priceHistory.push({
+            day: gameState.day,
+            price: company.currentPrice
+        });
     });
 
     // Display news
@@ -354,6 +380,171 @@ function displayNews(newsArray) {
     while (newsFeed.children.length > 50) {
         newsFeed.removeChild(newsFeed.lastChild);
     }
+}
+
+// Open chart modal
+function openChartModal(ticker) {
+    const company = gameState.companies.find(c => c.ticker === ticker);
+    if (!company) return;
+
+    const modal = document.getElementById('chart-modal');
+    document.getElementById('chart-title').textContent = `${company.name} (${ticker}) - PRICE HISTORY`;
+
+    // Calculate statistics
+    const prices = company.priceHistory.map(h => h.price);
+    const startPrice = prices[0];
+    const currentPrice = prices[prices.length - 1];
+    const highPrice = Math.max(...prices);
+    const lowPrice = Math.min(...prices);
+    const totalChange = ((currentPrice - startPrice) / startPrice) * 100;
+
+    // Update stats display
+    document.getElementById('chart-start-price').textContent = `¥${startPrice.toFixed(2)}`;
+    document.getElementById('chart-current-price').textContent = `¥${currentPrice.toFixed(2)}`;
+    document.getElementById('chart-high-price').textContent = `¥${highPrice.toFixed(2)}`;
+    document.getElementById('chart-low-price').textContent = `¥${lowPrice.toFixed(2)}`;
+
+    const changeElement = document.getElementById('chart-total-change');
+    changeElement.textContent = `${totalChange >= 0 ? '▲' : '▼'} ${Math.abs(totalChange).toFixed(2)}%`;
+    changeElement.style.color = totalChange >= 0 ? '#00ff88' : '#ff0066';
+
+    // Draw the chart
+    drawChart(company);
+
+    modal.style.display = 'block';
+}
+
+// Draw price chart
+function drawChart(company) {
+    const canvas = document.getElementById('price-chart');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size to match display size
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * window.devicePixelRatio;
+    canvas.height = rect.height * window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+    const width = rect.width;
+    const height = rect.height;
+
+    // Clear canvas
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.fillRect(0, 0, width, height);
+
+    const history = company.priceHistory;
+    if (history.length < 2) {
+        // Not enough data to draw chart
+        ctx.fillStyle = '#00ff88';
+        ctx.font = '16px Courier New';
+        ctx.textAlign = 'center';
+        ctx.fillText('Not enough data. Advance a few days to see chart.', width / 2, height / 2);
+        return;
+    }
+
+    // Calculate chart dimensions
+    const padding = 50;
+    const chartWidth = width - padding * 2;
+    const chartHeight = height - padding * 2;
+
+    // Get price range
+    const prices = history.map(h => h.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    const priceRange = maxPrice - minPrice || 1; // Avoid division by zero
+
+    // Draw grid lines
+    ctx.strokeStyle = '#003322';
+    ctx.lineWidth = 1;
+
+    // Horizontal grid lines (price levels)
+    for (let i = 0; i <= 5; i++) {
+        const y = padding + (chartHeight * i / 5);
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(width - padding, y);
+        ctx.stroke();
+
+        // Price labels
+        const price = maxPrice - (priceRange * i / 5);
+        ctx.fillStyle = '#00aa66';
+        ctx.font = '12px Courier New';
+        ctx.textAlign = 'right';
+        ctx.fillText(`¥${price.toFixed(2)}`, padding - 5, y + 4);
+    }
+
+    // Vertical grid lines (days)
+    const dayStep = Math.max(1, Math.floor(history.length / 10));
+    for (let i = 0; i < history.length; i += dayStep) {
+        const x = padding + (chartWidth * i / (history.length - 1));
+        ctx.beginPath();
+        ctx.moveTo(x, padding);
+        ctx.lineTo(x, height - padding);
+        ctx.stroke();
+
+        // Day labels
+        ctx.fillStyle = '#00aa66';
+        ctx.font = '12px Courier New';
+        ctx.textAlign = 'center';
+        ctx.fillText(`D${history[i].day}`, x, height - padding + 20);
+    }
+
+    // Draw price line
+    ctx.beginPath();
+    ctx.strokeStyle = '#00ff88';
+    ctx.lineWidth = 2;
+
+    for (let i = 0; i < history.length; i++) {
+        const x = padding + (chartWidth * i / (history.length - 1));
+        const normalizedPrice = (history[i].price - minPrice) / priceRange;
+        const y = padding + chartHeight - (normalizedPrice * chartHeight);
+
+        if (i === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    }
+    ctx.stroke();
+
+    // Draw area under the line
+    ctx.lineTo(width - padding, height - padding);
+    ctx.lineTo(padding, height - padding);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(0, 255, 136, 0.1)';
+    ctx.fill();
+
+    // Draw data points
+    ctx.fillStyle = '#00ff88';
+    for (let i = 0; i < history.length; i++) {
+        const x = padding + (chartWidth * i / (history.length - 1));
+        const normalizedPrice = (history[i].price - minPrice) / priceRange;
+        const y = padding + chartHeight - (normalizedPrice * chartHeight);
+
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Draw current price indicator
+    const lastPrice = prices[prices.length - 1];
+    const lastNormalizedPrice = (lastPrice - minPrice) / priceRange;
+    const lastY = padding + chartHeight - (lastNormalizedPrice * chartHeight);
+
+    ctx.strokeStyle = '#ff0066';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(padding, lastY);
+    ctx.lineTo(width - padding, lastY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Current price label
+    ctx.fillStyle = '#ff0066';
+    ctx.font = 'bold 14px Courier New';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Current: ¥${lastPrice.toFixed(2)}`, width - padding + 5, lastY + 4);
 }
 
 // Start game when page loads
